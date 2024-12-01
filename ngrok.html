@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba WebSocket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+        #input {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Prueba WebSocket</h2>
+    <div id="messages"></div>
+    <div id="input">
+        <input type="text" id="messageInput" placeholder="Escribe un mensaje" />
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        // Conectar al servidor WebSocket
+        const ws = new WebSocket('wss://9322-201-46-114-33.ngrok-free.app/ws');
+
+
+        ws.onopen = () => {
+            console.log('Conexión WebSocket abierta');
+            document.getElementById('messages').innerHTML += '<div>Conexión establecida</div>';
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Mensaje recibido:', event.data);
+            document.getElementById('messages').innerHTML += `<div><strong>Servidor:</strong> ${event.data}</div>`;
+        };
+
+        ws.onclose = () => {
+            console.log('Conexión WebSocket cerrada');
+            document.getElementById('messages').innerHTML += '<div>Conexión cerrada</div>';
+        };
+
+        ws.onerror = (error) => {
+            console.error('Error en la conexión WebSocket:', error);
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (message) {
+                ws.send(message);
+                console.log('Mensaje enviado:', message);
+                document.getElementById('messages').innerHTML += `<div><strong>T\u00fa:</strong> ${message}</div>`;
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
